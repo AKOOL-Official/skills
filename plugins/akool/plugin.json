@@ -1,0 +1,90 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "akool",
+  "version": "1.0.0",
+  "description": "Create AI videos, images, voiceovers, talking avatars and face swaps with your Akool account.",
+  "author": {
+    "name": "Akool",
+    "url": "https://akool.com"
+  },
+  "homepage": "https://akool.com",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Akool",
+        "shortDescription": "AI video, image and voice",
+        "longDescription": "Create AI images, image-to-video and text-to-video clips, talking avatars and talking photos, voiceovers with text-to-speech, and face swaps from your Akool account, right inside the chat. Built for marketers and creators who need short videos and visuals without opening another editor. Limitations: you need an Akool account. Jobs run asynchronously and can take a few minutes to finish. Result links are temporary: video URLs expire after about 7 days, so download anything you want to keep.",
+        "developerName": "Akool",
+        "category": "Creativity",
+        "websiteURL": "https://akool.com",
+        "supportURL": "https://help.akool.com",
+        "privacyPolicyURL": "https://akool.com/privacy-policy",
+        "termsOfServiceURL": "https://akool.com/terms-of-service",
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/logo.png",
+        "capabilities": [],
+        "defaultPrompt": [
+          "Use Akool to make a 5-second video of ocean waves at sunset",
+          "Make a talking avatar read this script",
+          "Use Akool to create a product photo of white sneakers on a pastel background"
+        ]
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Use a dedicated reviewer account with Akool credits. Read-only; nothing is generated.",
+              "prompt": "How many Akool credits do I have left?",
+              "tools_triggered": "account_credit",
+              "expected_behavior": "Calls account_credit once and reports the balance exactly as returned. Does not start any generation or invent a number."
+            },
+            {
+              "description": "Text-to-image on the reviewer account; spends about 3 credits.",
+              "prompt": "Use Akool to generate one 1:1 image of a red bicycle leaning against a white brick wall, then give me the link.",
+              "tools_triggered": "image_create, image_info",
+              "expected_behavior": "Calls image_create with the prompt, scale 1:1 and a single image, then checks image_info with the returned _id. Either image_status reaches 3 within the same reply and it replies with the image URL, or, if the image is still processing after the first checks, it replies with the task id and current status, and when the user asks to check the status it calls image_info again and replies with the image URL. If image_status is 4, reports error_reasons instead of claiming success. Never invents a URL."
+            },
+            {
+              "description": "Image-to-video from a stable public image on Akool's CDN; spends credits on a paid plan. The prompt confirms the spend up front. Rendering takes 1-3 minutes: after the first reply, wait about two minutes and ask \"Check the video status.\"",
+              "prompt": "Use Akool to animate this image into a 5-second video where she slowly turns her head toward the camera and smiles: https://static.website-files.org/assets/Image_to_Video/InputOutput/INPUT_lipstickLady.png. Use the default model; I confirm the credit cost.",
+              "tools_triggered": "video_image2video_create, video_result",
+              "expected_behavior": "Submits one video_image2video_create task with the given image_url and motion prompt, then checks video_result with the returned _id. Either video_status reaches 3 within the same reply and it replies with the video URL and the task id, or, if the video is still processing after the first checks, it replies with the task id and current status, and when the user asks to check the video status it calls video_result again and replies with the video URL. Never invents a URL."
+            },
+            {
+              "description": "Text-to-speech with a system voice picked from voice_list; spends a few credits.",
+              "prompt": "Use Akool to read \"Welcome to Akool, where your ideas become videos.\" aloud in an English female voice and give me the audio file.",
+              "tools_triggered": "voice_list, audio_tts, voice_result",
+              "expected_behavior": "Calls voice_list filtered to English, picks a female voice_id from the returned list (never an invented one), calls audio_tts with the exact text, then checks voice_result. Either data.result.status reaches 3 within the same reply and it replies with the data.result.preview audio URL and the voice used, or, if the audio is still processing after the first checks, it replies with the task id and current status, and when the user asks to check the status it calls voice_result again and replies with the audio URL and the voice used. Never invents a URL."
+            },
+            {
+              "description": "Single-face swap between two clear portrait photos on Akool's CDN; spends credits.",
+              "prompt": "Use Akool to put the face from https://static.website-files.org/assets/voiceover_face/compressed_image_1742892810241.jpg onto the woman in https://static.website-files.org/assets/voiceover_face/compressed_image_1742892885170.jpg.",
+              "tools_triggered": "faceswap_plus, faceswap_result",
+              "expected_behavior": "Calls faceswap_plus with the first URL as source_url and the second as target_url, then checks faceswap_result with the returned _id. Either the result is finished within the same reply and it replies with the swapped image URL, or, if it is still processing after the first checks, it replies with the task id and current status, and when the user asks to check the status it calls faceswap_result again and replies with the swapped image URL. Does not swap the roles of the two images. Never invents a URL."
+            }
+          ],
+          "negative": [
+            {
+              "description": "General knowledge question unrelated to media generation.",
+              "prompt": "What's the weather like in Paris this weekend?",
+              "expected_behavior": "Does not call any Akool tool or spend credits. Answers from other available sources or says it cannot check live weather."
+            },
+            {
+              "description": "Plain text translation; Akool's tools generate media and do not translate text.",
+              "prompt": "Translate this paragraph into Spanish: Our team will be closed on Friday for the holiday. We will reply to all messages on Monday.",
+              "expected_behavior": "Returns the Spanish translation directly in the reply. Does not call any Akool tool, including audio_tts, and does not spend credits."
+            },
+            {
+              "description": "Coding request with no media output.",
+              "prompt": "Write a Python function that returns the n-th Fibonacci number.",
+              "expected_behavior": "Writes the Python function directly. Does not call any Akool tool or spend credits."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "First release: create AI images, videos, voiceovers, talking avatars and face swaps from your Akool account."
+      }
+    }
+  }
+}

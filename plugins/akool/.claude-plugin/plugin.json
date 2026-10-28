@@ -1,0 +1,10 @@
+{
+  "name": "akool",
+  "description": "Create AI videos, images, voiceovers, talking avatars and face swaps with your Akool account.",
+  "author": { "name": "Akool", "url": "https://akool.com" },
+  "homepage": "https://akool.com",
+  "repository": "https://github.com/AKOOL-Official/skills",
+  "mcpServers": {
+    "akool": { "type": "http", "url": "https://openapi.akool.com/mcp/v1" }
+  }
+}

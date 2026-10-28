@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "akool": {
+      "type": "streamable-http",
+      "url": "https://openapi.akool.com/mcp/v1"
+    }
+  }
+}

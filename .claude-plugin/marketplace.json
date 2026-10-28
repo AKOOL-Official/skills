@@ -1,0 +1,11 @@
+{
+  "name": "akool",
+  "owner": { "name": "Akool", "url": "https://akool.com" },
+  "plugins": [
+    {
+      "name": "akool",
+      "source": "./plugins/akool",
+      "description": "Create AI videos, images, voiceovers, talking avatars and face swaps with your Akool account."
+    }
+  ]
+}
