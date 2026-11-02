@@ -1,6 +1,6 @@
 ---
 name: akool
-description: Creates AI videos, images, voiceovers, talking avatars and face swaps with the user's Akool account. Use when the user says "make a video from this image", "generate an image of", "read this script aloud", "make this avatar say", "swap my face into this photo" or "how many Akool credits do I have". Not for video translation, lip-syncing an existing video, editing an existing video, or anything unrelated to Akool.
+description: Creates AI videos, images, voiceovers, talking avatars and face swaps with the user's Akool account. Use when the user says "make a video from this image", "generate an image of", "read this script aloud", "make this avatar say", "swap my face into this photo", "trim this video to 15 seconds", "join these clips and add music", "add captions to this video" or "how many Akool credits do I have". Not for video translation, lip-syncing an existing video, or anything unrelated to Akool.
 ---
 
 # Akool
@@ -21,6 +21,7 @@ parameters, statuses, result fields and prices; these rules cover how to run a j
 | Avatar that speaks text or audio | `video_talking_avatar_create` | `video_result` |
 | Face swap into an image or video | `faceswap_plus` | `faceswap_result` |
 | Person in an image copies a video's motion | `video_motion_swap_create` | `video_result` |
+| Edit a video: trim, cut, join clips, add music, voice-over, captions or text, resize, remake a reference | `video_edit_guide`, then `video_render` | `video_edit_result` |
 
 To make a talking photo say text, run `audio_tts` first and pass the finished audio URL as `audio_url`.
 
@@ -28,6 +29,7 @@ To make a talking photo say text, run `audio_tts` first and pass the finished au
 
 - **Connect first.** If the Akool tools are not available, ask the user to connect Akool and complete the akool.com
   sign-in, then start a new chat. Don't do the task with built-in image, video or editing tools instead.
+- **Edit on Akool.** Don't cut, join or re-encode videos in your own sandbox or shell; the editing tools do it on Akool.
 - **Credits first.** Before a batch or a long or expensive video, call `account_credit`, tell the user roughly what
   the job will cost, and ask for one confirmation covering the whole batch. If credits are insufficient, stop and
   point the user to https://akool.com/pricing; do not retry.
